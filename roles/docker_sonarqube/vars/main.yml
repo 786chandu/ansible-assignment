@@ -1,0 +1,16 @@
+
+# vars file for docker_sonarqube
+---
+sonarqube_image: "sonarqube:9.9.4-community"
+sonarqube_container_name: "sonarqube"
+sonarqube_network_name: "sonarqube_net"
+sonarqube_db_user: "sonarqube"
+sonarqube_db_password: "password"
+sonarqube_db_name: "sonarqube"
+
+postgres_image: "postgres:latest"
+postgres_container_name: "postgres"
+postgres_network_name: "sonarqube_net"
+postgres_db_user: "postgres"
+postgres_db_password: "password"
+postgres_db_name: "sonarqube"

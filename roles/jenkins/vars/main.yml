@@ -1,0 +1,6 @@
+---
+# vars file for sample
+java: "openjdk-11-jdk"
+jenkins:
+  keyring_URL: "https://pkg.jenkins.io/debian/jenkins.io-2023.key"
+  

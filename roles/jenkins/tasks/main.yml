@@ -1,0 +1,51 @@
+---
+- name: Upgrade all packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+
+- name: Install Java
+  become: true
+  apt:    
+    name: "{{java}}"
+    update_cache: yes
+    state: present
+
+- name: Ensure the Jenkins keyring file is available
+  become: true
+  become_user: root
+  get_url:
+    url: "{{ jenkins.keyring_URL }}"
+    dest: /usr/share/keyrings/jenkins-keyring.asc
+    mode: '0644'
+
+- name: Ensure the repository is configured
+  become: true
+  lineinfile:
+    path: /etc/apt/sources.list.d/jenkins.list
+    line: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/"
+    create: yes     
+
+
+# - name: Ensure the repository is configured 
+#   become: yes 
+#   apt_repository: repo='deb https://pkg.jenkins.io/debian-stable binary/' state=present 
+
+
+- name: Install Jenkins 
+  become: true
+  apt: 
+   update_cache: yes
+   name: jenkins
+   state: latest 
+
+- name: Start Jenkins 
+  become: true
+  service: 
+    name: jenkins 
+    enabled: true
+    state: started
+
+

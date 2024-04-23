@@ -1,0 +1,10 @@
+---
+- name: Install Jenkins and SonarQube
+  hosts: target_machine
+  handlers:
+    - name: restart postgres
+      service: name=postgresql state=restarted
+  become: true
+  roles:
+    - jenkins
+    - docker_sonarqube

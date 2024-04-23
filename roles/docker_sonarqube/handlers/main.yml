@@ -1,0 +1,7 @@
+# handlers file for docker_sonarqube
+# ---
+# - name: Restart Docker
+#   become: true
+#   systemd:
+#     name: docker
+#     state: restarted

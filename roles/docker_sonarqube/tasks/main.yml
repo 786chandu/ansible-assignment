@@ -1,0 +1,81 @@
+# tasks file for docker_sonarqube
+---
+- name: Install Docker dependencies
+  become: true
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+
+- name: Add Docker GPG key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker APT repository
+  become: true
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Upgrade all packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+    autoremove: yes
+    autoclean: yes
+
+- name: Install Docker
+  become: true
+  apt:
+    update_cache: yes
+    name: docker-ce
+    state: present
+
+# - name: Install Docker Compose
+#   become: true
+#   pip:
+#     name: docker-compose
+#     version: "{{ docker_compose_version }}"
+#     state: present
+
+- name: Create directory for Docker Compose files
+  file:
+    path: /opt/docker-compose
+    state: directory
+
+# - name: Copy Docker Compose file
+#   copy:
+#     src: docker-compose.yml
+#     dest: /opt/docker-compose/docker-compose.yml
+
+- name: Start Docker services
+  become: true
+  systemd:
+    name: docker
+    state: started
+
+# - name: Ensure Docker is restarted
+#   become: true
+#   notify: Restart Docker
+#   systemd:
+#     name: docker
+#     state: restarted
+
+- name: Render Docker Compose file from template
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/docker-compose/docker-compose.yml
+
+- name: Run Docker Compose
+  command: docker compose -f /opt/docker-compose/docker-compose.yml up -d    
+  #when: sonarqube_zip.stat.exists
+
+# - name: Run Docker Compose
+#   command: docker-compose -f /opt/docker-compose/docker-compose.yml up -d

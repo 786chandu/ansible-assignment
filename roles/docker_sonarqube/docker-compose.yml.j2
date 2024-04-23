@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  sonarqube:
+    image: "{{ sonarqube_image }}"
+    container_name: "{{ sonarqube_container_name }}"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonarqube
+      - SONARQUBE_JDBC_USERNAME={{ postgres_db_user }}
+      - SONARQUBE_JDBC_PASSWORD={{ postgres_db_password }}
+    ports:
+      - "9000:9000"
+      - "9092:9092"
+    depends_on:
+      - postgres  
+    networks:
+      - sonarqube_net
+
+  postgres:
+    image: "{{ postgres_image }}"
+    container_name: "{{ postgres_container_name }}"
+    environment:
+      - POSTGRES_USER={{ postgres_db_user }}
+      - POSTGRES_PASSWORD={{ postgres_db_password }}
+      - POSTGRES_DB={{ postgres_db_name }}
+    networks:
+      - sonarqube_net
+
+networks:
+  sonarqube_net:
